@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
+#include <cstring>
 
 i2c::i2c(int adapter) {
 
@@ -35,8 +36,22 @@ int i2c::write_byte(uint8_t reg, uint8_t byte) {
   return write(file, buffer, 2);
 }
 
+int i2c::write_bytes(uint8_t reg, uint8_t* bytes, int num) {
+  uint8_t* buffer = new uint8_t[num+1];
+  buffer[0] = reg;
+  memcpy(buffer+1,bytes,num);
+
+  int ret = write(file,buffer,num+1);
+  delete buffer;
+  return ret;
+}
+
 int i2c::read_byte(uint8_t reg, uint8_t* byte) {
-  struct i2c_msg* msgs = (struct i2c_msg*)malloc(sizeof(struct i2c_msg) * 2);
+  return read_bytes(reg,byte,1);
+}
+
+int i2c::read_bytes(uint8_t reg, uint8_t* bytes, int num){
+  struct i2c_msg* msgs = new struct i2c_msg[num+1];
 
   msgs[0].addr = slave;
   msgs[0].flags = 0x00;
@@ -45,14 +60,15 @@ int i2c::read_byte(uint8_t reg, uint8_t* byte) {
 
   msgs[1].addr = slave;
   msgs[1].flags = I2C_M_RD;
-  msgs[1].len = 1;
-  msgs[1].buf = byte;
+  msgs[1].len = num;
+  msgs[1].buf = bytes;
 
   struct i2c_rdwr_ioctl_data data;
   data.msgs = msgs;
   data.nmsgs = 2;
 
-  return ioctl(file, I2C_RDWR, &data);
+  int ret = ioctl(file, I2C_RDWR, &data);
+  delete[] msgs;
+  return ret;
 }
 
-int i2c::read_word(uint8_t reg, uint8_t* byte){return 0;}

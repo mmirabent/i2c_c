@@ -15,8 +15,9 @@ public:
   int set_slave(uint8_t address);
 
   int write_byte(uint8_t reg, uint8_t byte);
+  int write_bytes(uint8_t, uint8_t* bytes, int num);
   int read_byte(uint8_t reg, uint8_t* byte);
-  int read_word(uint8_t reg, uint8_t* byte);
+  int read_bytes(uint8_t reg, uint8_t* bytes, int num);
 
 private:
   int file;
