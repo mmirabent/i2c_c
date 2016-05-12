@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <linux/i2c-dev.h>
@@ -39,26 +40,36 @@ int main() {
         exit(2);
     }
 
-    // 0x0F is the WHO_AM_I register on the LSM9DS1. We will try to read it to
-    // make sure that we are talking to the device.
-    __u8 reg = 0x0F;
+    // 0x10 is the gyroscope control register. Setting this register will turn
+    // on both the gyro and accelerometer
+    __u8 reg = 0x10;
     char buf[10];
 
     buf[0] = reg;
+    buf[1] = 1<<5; // The value turns on the slowest ODR possible
 
-    if(write(file,buf,1) != 1 )
+    if(write(file,buf,2) != 2 ) // Write the control register
     {
         // write failed
         perror("Write failed");
     }
 
-
-    if(read(file, buf, 1) != 1) {
-        // Read failed
-        perror("Read failed");
-    }
-    else {
-        printf("0x%X\n",buf[0]);
+    // This loop continually reads the high byte of the accelerometer output
+    // register
+    while(1)
+    {
+        buf[0] = 0x28; // X axis acellerometer high byte
+        if(write(file, buf, 1) != 1) { // Tell the which register to read
+            // Read failed
+            perror("Write  failed");
+        }
+        if(read(file,buf,1) != 1) { // Read the register
+            perror("Read failed");
+        }
+        else {
+            printf("0x%X\n",buf[0]); // Print the register
+        }
+        usleep(50*1000); // sleep for 50 ms
     }
 }
 
