@@ -1,5 +1,6 @@
 
 #include "libi2c.h"
+#include "registers.h"
 #include <cstdio>
 #include <unistd.h>
 

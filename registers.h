@@ -1,3 +1,6 @@
+#ifndef LSM9DS1_REG_H
+#define LSM9DS1_REG_H
+
 // Accelerometer Registers
 
 #define ACT_THS 0x04
@@ -18,7 +21,7 @@
 #define INT_GEN_SRC_G 0x14 
 #define OUT_TEMP_L 0x15 
 #define OUT_TEMP_H 0x16 
-#define STATUS_REG 0x17 
+#define STATUS_REG1 0x17 
 #define OUT_X_L_G 0x18 
 #define OUT_X_H_G 0x19 
 #define OUT_Y_L_G 0x1A 
@@ -33,7 +36,7 @@
 #define CTRL_REG9 0x23 
 #define CTRL_REG10 0x24
 #define INT_GEN_SRC_XL 0x26
-#define STATUS_REG 0x27
+#define STATUS_REG2 0x27
 #define OUT_X_L_XL 0x28
 #define OUT_X_H_XL 0x29
 #define OUT_Y_L_XL 0x2A
@@ -76,3 +79,6 @@
 #define INT_SRC_M 0x31
 #define INT_THS_L_M 0x32
 #define INT_THS_H_M 0x33
+
+#endif
+
