@@ -2,9 +2,9 @@
 #include "registers.h"
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include <cstdio>
-#include <cstdint>
-#include <unistd.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <time.h>
 
 int main() {
 
@@ -33,12 +33,13 @@ int main() {
 
   // This loop continually reads the high byte of the accelerometer output
   // register
-  uint8_t* buf = new uint8_t;
-  reg = OUT_X_H_G;
+  int buf;
+  reg = OUT_X_L_G;
   while (1) {
     //i2cdev.read_byte(reg,buf);
-    *buf = wiringPiI2CReadReg8(i2c,reg);
-    printf("0x%X\n", *buf); // Print the register
-    usleep(50 * 1000); // sleep for 50 ms
+    buf = wiringPiI2CReadReg8(i2c,reg);
+    printf("0x%X\n", buf); // Print the register
+    struct timespec fifty_ms = (struct timespec){0,50*1000*1000};
+    nanosleep(&fifty_ms,NULL);
   }
 }
