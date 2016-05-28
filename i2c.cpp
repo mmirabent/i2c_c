@@ -9,7 +9,7 @@
 int main() {
 
   // Setup the GPIO interface
-  wiringPiSetup();
+  wiringPiSetupSys();
 
   // This is the 7 bit slave address we want to write to.
   // Range is 0x03 to 0x77
