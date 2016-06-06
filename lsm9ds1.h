@@ -1,0 +1,28 @@
+#ifndef LSM9DS1_H
+#define LSM9DS1_H
+
+#include <stdint.h>
+#include "registers.h"
+
+struct g_data {
+  int x;
+  int y;
+  int z;
+};
+
+struct a_data {
+  int x;
+  int y;
+  int z;
+};
+
+int set_hpf_reference(int id, int ref);
+int set_odr(int id, int odr);
+int set_fsg(int id, int fs);
+int get_temp(int id);
+int get_status(int id);
+void get_gyro(int fd, struct g_data* data);
+void get_accel(int fd, struct a_data* data);
+
+#endif
+
