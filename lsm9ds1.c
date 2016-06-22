@@ -75,3 +75,8 @@ void get_accel(int fd, struct a_data* data)
   data->z = z_l | (z_h << 8);
 }
 
+int get_status(int fd)
+{
+  return wiringPiI2CReadReg8(fd,STATUS_REG1);
+}
+
