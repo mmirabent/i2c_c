@@ -11,14 +11,14 @@
 int main() {
 
   // Setup the GPIO interface
-  wiringPiSetupSys();
+  int i2c = open_i2c(1);
 
   // This is the 7 bit slave address we want to write to.
   // Range is 0x03 to 0x77
   // 0x6A is the slave address for the accelerometer and gyro on an LSM9DS1
   // with the SA0 line pulled low
-  int addr = 0x6A;
-  int i2c = wiringPiI2CSetup(addr);
+  uint8_t addr = 0x6A;
+  set_slave(i2c,addr);
 
   if(i2c == -1) // Something terrible has happened
   {

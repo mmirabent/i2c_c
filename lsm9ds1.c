@@ -1,6 +1,5 @@
 #include "lsm9ds1.h"
-#include <wiringPiI2C.h>
-#include <wiringPi.h>
+#include "libi2c.h"
 
 int set_odr(int fd, int odr)
 {
@@ -8,13 +7,14 @@ int set_odr(int fd, int odr)
   int shifted = (odr << 5) & 0xE0;
 
   // get the current CTRL_REG_1
-  int ctrl_reg1 = wiringPiI2CReadReg8(fd,CTRL_REG1_G);
+  uint8_t ctrl_reg1;
+  read_byte(fd,CTRL_REG1_G,&ctrl_reg1);
 
   // Set the ODR bits
   ctrl_reg1 |= shifted;
 
   // Write back CTRL_REG_1
-  return wiringPiI2CWriteReg8(fd,CTRL_REG1_G,ctrl_reg1);
+  return write_byte(fd,CTRL_REG1_G,ctrl_reg1);
 }
 
 void get_gyro(int fd, struct g_data* data)
@@ -23,37 +23,10 @@ void get_gyro(int fd, struct g_data* data)
   if(!data)
     return;
 
-  // These will hold the individual bytes read from the device
-  int x_h,x_l,y_h,y_l,z_h,z_l;
-
-  // Read the high and low bytes
-  // A note, this is probably not the most efficient way to do this as every
-  // read statement is a seperate I2C transaction. It's probably not worth it
-  // but you can get even faster throughput(theoretically) if you omit the stop
-  // and start conditions. In order to do that, however, we'd have to revert to
-  // using raw ioctl() calls. So we'll cross that bridge if/when we get there
-
-  /*
-  x_l = wiringPiI2CReadReg8(fd,OUT_X_L_G);
-  x_h = wiringPiI2CRead(fd);
-  y_l = wiringPiI2CRead(fd);
-  y_h = wiringPiI2CRead(fd);
-  z_l = wiringPiI2CRead(fd);
-  z_h = wiringPiI2CRead(fd);
-  printf("%X,%X,%X,%X,%X,%X\n",x_l,x_h,y_l,y_h,z_l,z_h);
-  */
-
-  // Store the data in the data opject
- /* data->x = x_l | (x_h << 8);
-  data->y = y_l | (y_h << 8);
-  data->z = z_l | (z_h << 8);
-  */
-  
-  data->x = (int16_t)wiringPiI2CReadReg16(fd,OUT_X_L_G);
-  data->y = (int16_t)wiringPiI2CReadReg16(fd,OUT_Y_L_G);
-  data->z = (int16_t)wiringPiI2CReadReg16(fd,OUT_Z_L_G);
+  read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
 }
 
+/*
 void get_accel(int fd, struct a_data* data)
 {
   // If the data pointer is null, return now
@@ -76,16 +49,17 @@ void get_accel(int fd, struct a_data* data)
   y_h = wiringPiI2CRead(fd);
   z_l = wiringPiI2CRead(fd);
   z_h = wiringPiI2CRead(fd);
-  printf("%X,%X,%X,%X,%X,%X\n",x_l,x_h,y_l,y_h,z_l,z_h);
 
   // Store the data in the data opject
   data->x = x_l | (x_h << 8);
   data->y = y_l | (y_h << 8);
   data->z = z_l | (z_h << 8);
-}
+}*/
 
 int get_status(int fd)
 {
-  return wiringPiI2CReadReg8(fd,STATUS_REG1);
+  uint8_t stat;
+  read_byte(fd,STATUS_REG1,&stat);
+  return stat;
 }
 
