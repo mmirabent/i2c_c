@@ -23,7 +23,7 @@ void get_gyro(int fd, struct g_data* data)
   if(!data)
     return;
 
-  read_bytes(fd,OUT_X_L_G,data,6);
+  read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
 }
 
 /*
@@ -58,7 +58,7 @@ void get_accel(int fd, struct a_data* data)
 
 int get_status(int fd)
 {
-  int stat;
+  uint8_t stat;
   read_byte(fd,STATUS_REG1,&stat);
   return stat;
 }
