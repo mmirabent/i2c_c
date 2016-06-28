@@ -5,9 +5,9 @@
 #include "registers.h"
 
 struct g_data {
-  int x;
-  int y;
-  int z;
+  int16_t x;
+  int16_t y;
+  int16_t z;
 };
 
 struct a_data {

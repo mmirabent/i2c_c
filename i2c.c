@@ -28,7 +28,7 @@ int main() {
 
   // Set the gyroscope and accelerometer output data rate to 1
   // 1 corresponds to 14.9 Hz. see datasheet for other values
-  set_odr(i2c,1);
+  set_odr(i2c,3);
 
   // This loop continually reads the high byte of the accelerometer output
   // register

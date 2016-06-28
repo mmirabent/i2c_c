@@ -8,3 +8,8 @@ libi2c.o : libi2c.c libi2c.h
 
 lsm9ds1.o : lsm9ds1.c lsm9ds1.h
 
+clean :
+	rm -rf *.o i2c
+
+.PHONY : clean
+

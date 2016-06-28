@@ -33,17 +33,25 @@ void get_gyro(int fd, struct g_data* data)
   // and start conditions. In order to do that, however, we'd have to revert to
   // using raw ioctl() calls. So we'll cross that bridge if/when we get there
 
+  /*
   x_l = wiringPiI2CReadReg8(fd,OUT_X_L_G);
   x_h = wiringPiI2CRead(fd);
   y_l = wiringPiI2CRead(fd);
   y_h = wiringPiI2CRead(fd);
   z_l = wiringPiI2CRead(fd);
   z_h = wiringPiI2CRead(fd);
+  printf("%X,%X,%X,%X,%X,%X\n",x_l,x_h,y_l,y_h,z_l,z_h);
+  */
 
   // Store the data in the data opject
-  data->x = x_l | (x_h << 8);
+ /* data->x = x_l | (x_h << 8);
   data->y = y_l | (y_h << 8);
   data->z = z_l | (z_h << 8);
+  */
+  
+  data->x = (int16_t)wiringPiI2CReadReg16(fd,OUT_X_L_G);
+  data->y = (int16_t)wiringPiI2CReadReg16(fd,OUT_Y_L_G);
+  data->z = (int16_t)wiringPiI2CReadReg16(fd,OUT_Z_L_G);
 }
 
 void get_accel(int fd, struct a_data* data)
@@ -68,6 +76,7 @@ void get_accel(int fd, struct a_data* data)
   y_h = wiringPiI2CRead(fd);
   z_l = wiringPiI2CRead(fd);
   z_h = wiringPiI2CRead(fd);
+  printf("%X,%X,%X,%X,%X,%X\n",x_l,x_h,y_l,y_h,z_l,z_h);
 
   // Store the data in the data opject
   data->x = x_l | (x_h << 8);
