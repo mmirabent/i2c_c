@@ -26,35 +26,26 @@ void get_gyro(int fd, struct g_data* data)
   read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
 }
 
-/*
 void get_accel(int fd, struct a_data* data)
 {
   // If the data pointer is null, return now
   if(!data)
     return;
 
-  // These will hold the individual bytes read from the device
-  int x_h,x_l,y_h,y_l,z_h,z_l;
+  read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
+}
 
-  // Read the high and low bytes
-  // A note, this is probably not the most efficient way to do this as every
-  // read statement is a seperate I2C transaction. It's probably not worth it
-  // but you can get even faster throughput(theoretically) if you omit the stop
-  // and start conditions. In order to do that, however, we'd have to revert to
-  // using raw ioctl() calls. So we'll cross that bridge if/when we get there
+void get_mag(int fd, struct m_data* data)
+{
+  // If the data is null, return now
+  uint8_t old_slave = i2c_slave_addr;
+  uint8_t new_slave = ((old_slave << 1) & 0x02) | 0x1C;
+  set_slave(fd,new_slave);
 
-  x_l = wiringPiI2CReadReg8(fd,OUT_X_L_XL);
-  x_h = wiringPiI2CRead(fd);
-  y_l = wiringPiI2CRead(fd);
-  y_h = wiringPiI2CRead(fd);
-  z_l = wiringPiI2CRead(fd);
-  z_h = wiringPiI2CRead(fd);
+  read_bytes(fd,OUT_X_L_M,(uint8_t*)data,6);
 
-  // Store the data in the data opject
-  data->x = x_l | (x_h << 8);
-  data->y = y_l | (y_h << 8);
-  data->z = z_l | (z_h << 8);
-}*/
+  set_slave(fd,old_slave);
+}
 
 int get_status(int fd)
 {
