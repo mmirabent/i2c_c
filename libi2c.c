@@ -33,7 +33,7 @@ int write_byte(int fd, uint8_t reg, uint8_t byte) {
   buf[0] = reg;
   buf[1] = byte;
 
-  return write(fd, buf, 2);
+  return (int)write(fd, buf, 2);
 }
 
 int write_bytes(int fd, uint8_t reg, uint8_t* bytes, size_t count) {
@@ -41,7 +41,7 @@ int write_bytes(int fd, uint8_t reg, uint8_t* bytes, size_t count) {
   buffer[0] = reg;
   memcpy(buffer+1,bytes,count);
 
-  int ret = write(fd,buffer,count+1);
+  int ret = (int)write(fd,buffer,count+1);
   free(buffer);
   return ret;
 }
