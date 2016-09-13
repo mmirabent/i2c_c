@@ -24,9 +24,8 @@ int main() {
   uint8_t addr = 0x6A;
   set_slave(i2c,addr);
 
-  // Set the gyroscope and accelerometer output data rate to 1
-  // 1 corresponds to 14.9 Hz. see datasheet for other values
-  set_odr(i2c,3);
+  // See lsm9ds1.c for exact values set to control registers
+  init_sensor(i2c);
 
   int status;
   struct g_data gdata;
