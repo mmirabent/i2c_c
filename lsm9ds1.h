@@ -16,6 +16,15 @@ struct a_data {
   int16_t z;
 };
 
+struct ga_data {
+  int16_t gx;
+  int16_t gy;
+  int16_t gz;
+  int16_t ax;
+  int16_t ay;
+  int16_t az;
+};
+
 struct m_data {
   int16_t x;
   int16_t y;
@@ -33,6 +42,7 @@ int init_sensor(int fd);
 void get_gyro(int fd, struct g_data* data);
 void get_accel(int fd, struct a_data* data);
 void get_mag(int fd, struct m_data* data);
+void get_gyro_accel(int fd, struct ga_data* data);
 
 #endif
 

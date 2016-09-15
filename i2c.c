@@ -28,18 +28,21 @@ int main() {
   init_sensor(i2c);
 
   int status;
-  struct g_data gdata;
+  struct ga_data gadata;
   struct m_data mdata;
 
-  printf("gyro_x,gyro_y,gyro_z,mag_x,mag_y,mag_z\n");
+  printf("gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z\n");
 
   while (1) {
     status = get_status(i2c);
-    if(!(status & 0x02)) // No new gyro data
+    //if no new gyro data
+    if(!(status & 0x02)) {
+      printf("Waiting for data\n");
       continue;
+    }
 
-    get_gyro(i2c,&gdata);
+    get_gyro_accel(i2c,&gadata);
     get_mag(i2c,&mdata);
-    printf("%d,%d,%d,%d,%d,%d\n",gdata.x,gdata.y,gdata.z,mdata.x,mdata.y,mdata.z);
+    printf("%d,%d,%d,%d,%d,%d,%d,%d,%d\n",gadata.gx,gadata.gy,gadata.gz,gadata.ax,gadata.ay,gadata.az,mdata.x,mdata.y,mdata.z);
   }
 }

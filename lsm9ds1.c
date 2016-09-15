@@ -76,6 +76,16 @@ void get_accel(int fd, struct a_data* data)
   read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
 }
 
+void get_gyro_accel(int fd, struct ga_data* data)
+{
+    if(!data)
+        return;
+
+    read_bytes(fd, OUT_X_L_G,(uint8_t*)data,12);
+
+
+}
+
 void get_mag(int fd, struct m_data* data)
 {
   // If the data is null, return now
