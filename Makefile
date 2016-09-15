@@ -1,6 +1,5 @@
 CC=clang
-CFLAGS=-g -O -std=gnu11 -Weverything -pedantic -I/usr/local/include
-LDFLAGS=-L/use/local/libs
+CFLAGS=-g -O -std=gnu11 -Weverything -pedantic 
 
 i2c : i2c.c libi2c.o lsm9ds1.o
 
