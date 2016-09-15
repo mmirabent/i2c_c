@@ -76,6 +76,68 @@ void get_accel(int fd, struct a_data* data)
   read_bytes(fd,OUT_X_L_G,(uint8_t*)data,6);
 }
 
+void get_gyro_accel(int fd, struct ga_data* data, struct ga_data_float* fdata)
+{
+    if(!data || !fdata)
+        return;
+
+    read_bytes(fd, OUT_X_L_G,(uint8_t*)data,12);
+
+    float g_fs;
+    float a_fs;
+    float m_fs;
+
+    switch(FS_G_VAL) {
+        case 0x0:
+            g_fs = 245;
+            break;
+        case 0x1:
+            g_fs = 500;
+            break;
+        case 0x3:
+            g_fs = 2000;
+            break;
+    }
+
+    switch(FS_XL_VAL) {
+        case 0x0:
+            a_fs = 2;
+            break;
+        case 0x1:
+            a_fs = 16;
+            break;
+        case 0x2:
+            a_fs = 4;
+            break;
+        case 0x3:
+            a_fs = 8;
+            break;
+    }
+
+    switch(FS_M_VAL) {
+        case 0x0:
+            m_fs = 4;
+            break;
+        case 0x1:
+            m_fs = 8;
+            break;
+        case 0x2:
+            m_fs = 12;
+            break;
+        case 0x3:
+            m_fs = 16;
+            break;
+    }
+
+    fdata->gx = data->gx*g_fs/32768;
+    fdata->gy = data->gy*g_fs/32768;
+    fdata->gz = data->gz*g_fs/32768;
+    fdata->ax = data->ax*g_fs/32768;
+    fdata->ay = data->ay*g_fs/32768;
+    fdata->az = data->az*g_fs/32768;
+
+}
+
 void get_mag(int fd, struct m_data* data)
 {
   // If the data is null, return now
