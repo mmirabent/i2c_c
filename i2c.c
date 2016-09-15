@@ -27,19 +27,12 @@ int main() {
   // See lsm9ds1.c for exact values set to control registers
   init_sensor(i2c);
 
-  int status;
   struct ga_data gadata;
   struct m_data mdata;
 
   printf("gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z\n");
 
   while (1) {
-    status = get_status(i2c);
-    //if no new gyro data
-    if(!(status & 0x02)) {
-      printf("Waiting for data\n");
-      continue;
-    }
 
     get_gyro_accel(i2c,&gadata);
     get_mag(i2c,&mdata);
