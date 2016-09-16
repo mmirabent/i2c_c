@@ -29,6 +29,7 @@ int main() {
 
   struct ga_data gadata;
   struct m_data mdata;
+  struct gam_data_float gamdata;
 
   printf("gyro_x,gyro_y,gyro_z,accel_x,accel_y,accel_z,mag_x,mag_y,mag_z\n");
 
@@ -36,6 +37,7 @@ int main() {
 
     get_gyro_accel(i2c,&gadata);
     get_mag(i2c,&mdata);
-    printf("%d,%d,%d,%d,%d,%d,%d,%d,%d\n",gadata.gx,gadata.gy,gadata.gz,gadata.ax,gadata.ay,gadata.az,mdata.x,mdata.y,mdata.z);
+    convert(gadata, mdata, &gamdata);
+    printf("%f,%f,%f,%f,%f,%f,%f,%f,%f\n",gamdata.gx,gamdata.gy,gamdata.gz,gamdata.ax,gamdata.ay,gamdata.az,gamdata.mx,gamdata.my,gamdata.mz);
   }
 }
