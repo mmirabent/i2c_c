@@ -99,15 +99,15 @@ int init_sensor(int fd)
 
 void convert(struct ga_data gdata, struct m_data mdata, struct gam_data_float* gamdata)
 {
-    gamdata->gx = gdata.gx*fs_g/(float)32768;
-    gamdata->gy = gdata.gy*fs_g/(float)32768;
-    gamdata->gz = gdata.gz*fs_g/(float)32768;
-    gamdata->ax = gdata.ax*fs_a/(float)32768;
-    gamdata->ay = gdata.ay*fs_a/(float)32768;
-    gamdata->az = gdata.az*fs_a/(float)32768;
-    gamdata->mx = mdata.x*fs_m/(float)32768;
-    gamdata->my = mdata.y*fs_m/(float)32768;
-    gamdata->mz = mdata.z*fs_m/(float)32768;
+    gamdata->gx = gdata.gx*fs_g/(float)32767;
+    gamdata->gy = gdata.gy*fs_g/(float)32767;
+    gamdata->gz = gdata.gz*fs_g/(float)32767;
+    gamdata->ax = gdata.ax*fs_a/(float)32767;
+    gamdata->ay = gdata.ay*fs_a/(float)32767;
+    gamdata->az = gdata.az*fs_a/(float)32767;
+    gamdata->mx = mdata.x*fs_m/(float)32767;
+    gamdata->my = mdata.y*fs_m/(float)32767;
+    gamdata->mz = mdata.z*fs_m/(float)32767;
 }
 
 void get_gyro_accel(int fd, struct ga_data* data)
