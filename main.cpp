@@ -34,18 +34,19 @@ int main() {
 
 
 
+  //printf("ax,ay,az,mx,my,mz,Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
   printf("ax,ay,az,mx,my,mz,Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
 
   while(1) {
     get_gyro_accel(i2c,&gadata);
     get_mag(i2c,&mdata);
     convert(gadata, mdata, &gamdata);
-    printf("%f,%f,%f,%f,%f,%f,",gamdata.ax,gamdata.ay,gamdata.az,gamdata.mx,gamdata.my,gamdata.mz);
+   // printf("%08.3f,%f,%f,%f,%f,%f,",gamdata.ax,gamdata.ay,gamdata.az,gamdata.mx,gamdata.my,gamdata.mz);
     raw_angle = eulercomp(gamdata.ax,gamdata.ay,gamdata.az,
                           gamdata.mx,gamdata.my,gamdata.mz);
-    printf("%f,%f,%f,",raw_angle.phi*57.296, raw_angle.theta*57.296, raw_angle.psi*57.296);
+    printf("%08.3f,%08.3f,%08.3f,",raw_angle.phi*57.296, raw_angle.theta*57.296, raw_angle.psi*57.296);
     avg_angle = moving_avg(raw_angle);
-    printf("%f,%f,%f\n",avg_angle.phi*57.296, avg_angle.theta*57.296, avg_angle.psi*57.296);
+    printf("%08.3f,%08.3f,%08.3f\n",avg_angle.phi*57.296, avg_angle.theta*57.296, avg_angle.psi*57.296);
 
   }
 
