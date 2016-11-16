@@ -1,6 +1,6 @@
 #include "moving.h"
 
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 100
 
 Euler moving_avg(Euler angle) {
     static double phi_buf[BUFFER_SIZE];

@@ -20,6 +20,8 @@ int main() {
     exit(1);
   }
 
+
+
   uint8_t addr = 0x6A;
   set_slave(i2c,addr);
 
@@ -30,12 +32,15 @@ int main() {
   Euler raw_angle;
   Euler avg_angle;
 
-  printf("Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
+
+
+  printf("ax,ay,az,mx,my,mz,Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
 
   while(1) {
     get_gyro_accel(i2c,&gadata);
     get_mag(i2c,&mdata);
     convert(gadata, mdata, &gamdata);
+    printf("%f,%f,%f,%f,%f,%f,",gamdata.ax,gamdata.ay,gamdata.az,gamdata.mx,gamdata.my,gamdata.mz);
     raw_angle = eulercomp(gamdata.ax,gamdata.ay,gamdata.az,
                           gamdata.mx,gamdata.my,gamdata.mz);
     printf("%f,%f,%f,",raw_angle.phi*57.296, raw_angle.theta*57.296, raw_angle.psi*57.296);
