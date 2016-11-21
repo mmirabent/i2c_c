@@ -25,7 +25,6 @@ int open_socket(char* ip);
 void send_angles(int sock, Euler angle);
 
 int main(int argc, char** argv) {
-  char* ip = "127.0.0.1";
   int i2c = open_i2c(1);
 
   if(i2c == -1) {
@@ -33,27 +32,25 @@ int main(int argc, char** argv) {
     exit(1);
   }
 
-  if(argc > 1) {
-    ip = argv[1];
-  } 
-
-
 
   uint8_t addr = 0x6A;
   set_slave(i2c,addr);
-
   init_sensor(i2c);
+
+  char* ip = NULL;
+  if(argc > 1)
+    ip = argv[1];
+  int sock = open_socket(ip);
+
   struct ga_data gadata;
   struct m_data mdata;
   struct gam_data_float gamdata;
   Euler raw_angle;
   Euler avg_angle;
 
-  int sock = open_socket(ip);
-  write(sock, "Hello\n",6);
 
   //printf("ax,ay,az,mx,my,mz,Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
-  printf("Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
+  //printf("Raw Phi, Raw Theta, Raw Psi, Filtered Phi, Filtered Theta, Filtered Psi\n");
 
   while(1) {
     get_gyro_accel(i2c,&gadata);
@@ -94,27 +91,30 @@ int open_socket(char* ip) {
   }
 
   // Set the contents of the struct to zero
-  memset((char*)&source_addr, 0, sizeof(source_addr));
+  memset(reinterpret_cast<char*>(&source_addr), 0, sizeof(source_addr));
   source_addr.sin_family = AF_INET;
   source_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   source_addr.sin_port = htons(0);
 
   // Name the socket
-  if(bind(sock, (struct sockaddr*)&source_addr, sizeof(source_addr)) < 0) {
+  if(bind(sock, reinterpret_cast<struct sockaddr*>(&source_addr), sizeof(source_addr)) < 0) {
     perror("Failed to bind socket");
     exit(5);
   }
 
-  struct in_addr dest_in_addr;
-  inet_aton(ip, &dest_in_addr);
 
-
-  memset((char*)&dest_addr, 0, sizeof(dest_addr));
+  memset(reinterpret_cast<char*>(&dest_addr), 0, sizeof(dest_addr));
   dest_addr.sin_family = AF_INET;
-  dest_addr.sin_addr = dest_in_addr;
   dest_addr.sin_port = htons(port);
+  if(!ip) {
+    dest_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+  } else {
+    struct in_addr dest_in_addr;
+    inet_aton(ip, &dest_in_addr);
+    dest_addr.sin_addr = dest_in_addr;
+  }
 
-  connect(sock, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+  connect(sock, reinterpret_cast<struct sockaddr*>(&dest_addr), sizeof(dest_addr));
   return sock;
 }
 
