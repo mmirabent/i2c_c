@@ -1,5 +1,6 @@
 *.csv
 *.o
 *.swp
+eigen3/
 i2c
 main

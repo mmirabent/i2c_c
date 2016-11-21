@@ -126,6 +126,7 @@ void get_mag(int fd, struct m_data* data)
   set_slave(fd,new_slave);
 
   read_bytes(fd,OUT_X_L_M,(uint8_t*)data,6);
+  data->x *= -1;
 
   set_slave(fd,old_slave);
 }
