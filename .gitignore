@@ -1,3 +1,5 @@
+*.csv
 *.o
 *.swp
 i2c
+main
