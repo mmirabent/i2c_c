@@ -5,8 +5,21 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
 
-int main() {
+int open_socket(char* ip);
+
+int main(int argc, char** argv) {
+
+  char* ip = argc > 1 ? argv[1] : NULL;
 
   // Setup the GPIO interface
   int i2c = open_i2c(1);
@@ -40,4 +53,45 @@ int main() {
     convert(gadata, mdata, &gamdata);
     printf("%f,%f,%f,%f,%f,%f,%f,%f,%f\n",gamdata.gx,gamdata.gy,gamdata.gz,gamdata.ax,gamdata.ay,gamdata.az,gamdata.mx,gamdata.my,gamdata.mz);
   }
+}
+
+int open_socket(char* ip) {
+  struct sockaddr_in source_addr, dest_addr;
+  uint16_t port = 9001;
+  int sock;
+
+  printf("Using port %d\n", port);
+
+  // Get a socket
+  if((sock = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    perror("Cannot create socket");
+    exit(4);
+  }
+
+  // Set the contents of the struct to zero
+  memset((char*)&source_addr, 0, sizeof(source_addr));
+  source_addr.sin_family = AF_INET;
+  source_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  source_addr.sin_port = htons(0);
+
+  // Name the socket
+  if(bind(sock, (struct sockaddr*)&source_addr, sizeof(source_addr)) < 0) {
+    perror("Failed to bind socket");
+    exit(5);
+  }
+
+  struct in_addr dest_in_addr;
+  if(!ip)
+    ip = "127.0.0.1"
+  inet_aton(ip, &dest_in_addr);
+
+
+  memset((char*)&dest_addr, 0, sizeof(dest_addr));
+  dest_addr.sin_family = AF_INET;
+  dest_addr.sin_addr.s_addr = dest_in_addr;
+  dest_addr.sin_port = htons(port);
+
+  connect(sock, (struct sockaddr*)&dest_addr, sizeof(dest_addr));
+
+  return sock;
 }
