@@ -22,7 +22,7 @@ extern "C" {
 using namespace std;
 
 int open_socket(char* ip);
-void send_angles(int sock, Euler angle);
+void send_angles(int sock, Euler angle, struct gam_data_float raw);
 
 int main(int argc, char** argv) {
   int i2c = open_i2c(1);
@@ -62,16 +62,25 @@ int main(int argc, char** argv) {
     //printf("%08.3f,%08.3f,%08.3f,",raw_angle.phi*57.296, raw_angle.theta*57.296, raw_angle.psi*57.296);
     avg_angle = moving_avg(raw_angle);
     //printf("%08.3f,%08.3f,%08.3f\n",avg_angle.phi*57.296, avg_angle.theta*57.296, avg_angle.psi*57.296);
-    send_angles(sock, avg_angle);
+    send_angles(sock, avg_angle, gamdata);
 
   }
 
 
 }
 
-void send_angles(int sock, Euler angle) {
-  char message[28];
-  sprintf(message, "%08.3f,%08.3f,%08.3f\n",angle.phi*57.296, angle.theta*57.296, angle.psi*57.296);
+void send_angles(int sock, Euler angle, struct gam_data_float raw) {
+  char message[128];
+  sprintf(message, "%08.3f,%08.3f,%08.3f,%08.3f,%08.3f,%08.3f,%08.3f,%08.3f,%08.3f\n",
+          angle.phi*57.296,
+          angle.theta*57.296,
+          angle.psi*57.296,
+          raw.ax,
+          raw.ay,
+          raw.az,
+          raw.gx,
+          raw.gy,
+          raw.gz);
 
   write(sock, message, sizeof(message));
 }
